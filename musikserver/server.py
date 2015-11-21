@@ -31,6 +31,17 @@ def wshandler(request):
 def redirect(request):
     return HTTPFound('/index.html')
 
+def brodcast(app, msg):
+    for ws in app['sockets']:
+        ws.send_str(",".join(msg))
+
+def consumer_thread(app, loop):
+    def inner():
+        while True:
+            msg = box.status_queue.get()
+            loop.call_soon_threadsafe(brodcast, app, msg)
+    return inner
+
 @asyncio.coroutine
 def init(loop):
     app = Application(loop=loop)
@@ -43,7 +54,6 @@ def init(loop):
     print("Server started at http://127.0.0.1:8080")
     return app, srv, handler
 
-
 @asyncio.coroutine
 def finish(app, srv, handler):
     for ws in app['sockets']:
@@ -55,11 +65,12 @@ def finish(app, srv, handler):
     yield from srv.wait_closed()
 
 box = spotbox.Spotbox(credentials.username, credentials.password)
-box.start()
 
 loop = asyncio.get_event_loop()
 app, srv, handler = loop.run_until_complete(init(loop))
 
+loop.run_in_executor(None, consumer_thread(app, loop))
+loop.run_in_executor(None, box.run)
 try:
     loop.run_forever()
 except KeyboardInterrupt:
