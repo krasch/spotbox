@@ -13,6 +13,7 @@ class Spotbox:
         self.track = None
         self.audio = spotify.AlsaSink(self.session)
         self.playing = False
+        self.session.on(spotify.SessionEvent.END_OF_TRACK, self.end_of_track)
 
     def run(self):
         timeout = 0
@@ -26,6 +27,11 @@ class Spotbox:
                     t = min(timeout, 100)
                     sleep(t / 1000.0)
             timeout = self.session.process_events()
+
+    def end_of_track(self, not_used):
+        self.session.player.unload()
+        self.send("track")
+        self.send("paused")
 
     def process_command(self, cmd):
         if cmd[0] == "track":
