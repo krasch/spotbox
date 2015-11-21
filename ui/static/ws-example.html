@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <script type="text/javascript">
+      function webSocketTest() {
+
+        ws = new WebSocket("ws://localhost:8080/ws");
+
+        ws.onopen = function() {
+          console.log("Socket opened.")
+        };
+
+        ws.onmessage = function (evt) {
+          var received_msg = evt.data;
+          console.log("Received: " + received_msg);
+        };
+
+        ws.onclose = function() {
+          console.log("Socket closed.");
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <a href="javascript:webSocketTest()">Connect by clicking here!</a>
+    <p>Use the console to send some commands like:</p>
+    <pre>
+      ws.send("track,spotify:track:34nJB4RMpMOuzS1IU9hUPp");
+      ws.send("play");
+      ws.send("pause");
+    </pre>
+ </body>
+</html>
