@@ -1,11 +1,40 @@
+socket = createSocket()
+
 player = {
-   playTrack: function(track) {
-        document.getElementById('player-title').innerHTML = track.title
-        document.getElementById('player-artist').innerHTML = track.artist
-        document.getElementById('player-album').innerHTML = track.album
-        document.getElementById('player-img').src = track.cover
-        document.getElementById("track-uri").value = '';
+
+   playTrack: function(trackURI) {
+       socket.send("track," + trackURI);
+       setTimeout(function() {player.play()}, 100);
+
+       spotify.getTrack(uri)
+              .then(ui.player.update, handleError);
    },
 
+   play: function() {
+       socket.send("play");
+   },
 
-};
+   pause: function() {
+       socket.send("pause");
+   },
+}
+
+function createSocket() {
+
+    ws = new WebSocket("ws://localhost:8080/ws");
+
+    ws.onopen = function() {
+          console.log("Socket opened.")
+        };
+
+    ws.onmessage = function (evt) {
+      var received_msg = evt.data;
+      console.log("Received: " + received_msg);
+    };
+
+    ws.onclose = function() {
+      console.log("Socket closed.");
+    };
+
+    return ws;
+}

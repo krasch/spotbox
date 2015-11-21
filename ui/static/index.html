@@ -5,31 +5,38 @@
     <title></title>
 
      <script type="text/javascript" charset="utf-8" src="3rdparty/js/spotify-web-api.js"></script>
+
      <script type="text/javascript" charset="utf-8" src="js/player.js"></script>
-     <script type="text/javascript" charset="utf-8" src="js/spotify.js"></script>
+     <script type="text/javascript" charset="utf-8" src="js/spotify-api.js"></script>
+     <script type="text/javascript" charset="utf-8" src="js/ui.js"></script>
 </head>
 <body>
 
-<div id="select-track">
+<div>
    <input type="text" name="track" placeholder="spotify track uri" id="track-uri">
-   <input type="submit" value="Submit" onclick="playTrack()">
+   <input type="submit" value="Submit" id="select-track-button">
 </div>
 
-<div id="player">
+<div>
    <img src="img/empty.png" height="200px" id="player-img">
    <div id="player-artist"></div>
    <div id="player-title"></div>
    <div id="player-album"></div>
+    <input type="submit" value="play" id="play-button" style="display:inline">
+   <input type="submit" value="pause" id="pause-button" style="display:inline">
 </div>
 
 
 <script>
 
-function playTrack() {
-   uri = document.getElementById('track-uri').value
-   spotify.getTrack(uri)
-          .then(player.playTrack);
-}
+document.getElementById('select-track-button')
+        .addEventListener("click", function() {
+              uri = ui.trackSelection.getTrack();
+              ui.trackSelection.clear();
+              player.playTrack(uri);});
+
+document.getElementById('play-button').addEventListener("click", player.play);
+document.getElementById('pause-button').addEventListener("click", player.pause);
 
 function handleError(err) {
     console.log(err);
