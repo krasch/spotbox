@@ -4,27 +4,31 @@
     <meta charset="UTF-8">
     <title></title>
 
-     <script type="text/javascript" charset="utf-8" src="static/3rdparty/js/spotify-web-api.js"></script>
+     <script type="text/javascript" charset="utf-8" src="3rdparty/js/spotify-web-api.js"></script>
+     <script type="text/javascript" charset="utf-8" src="js/player.js"></script>
+     <script type="text/javascript" charset="utf-8" src="js/spotify.js"></script>
 </head>
 <body>
 
+<div id="select-track">
+   <input type="text" name="track" placeholder="spotify track uri" id="track-uri">
+   <input type="submit" value="Submit" onclick="playTrack()">
+</div>
+
+<div id="player">
+   <img src="img/empty.png" height="200px" id="player-img">
+   <div id="player-artist"></div>
+   <div id="player-title"></div>
+   <div id="player-album"></div>
+</div>
+
+
 <script>
-var spotifyApi = new SpotifyWebApi();
 
-/*spotifyApi.getArtistAlbums('43ZHCT0cAZBISjO8DG9PnE')
-          .then(function(data) {console.log(data);})
-          .catch(handleError);*/
-
-spotifyApi.getTrack('1U8ZGtWBxcPeWcwDTCO64X')
-          .then(function(data) {console.log(data["album"]["images"][0]["url"]);})
-          .catch(handleError);
-
-function extractTrackInfo(trackData) {
-    console
-    return {"cover": data["album"]["images"][0]["url"]}
-    spotifyApi.getTrack('1U8ZGtWBxcPeWcwDTCO64X')
-              .then(function(data) {console.log(data["album"]["images"][0]["url"]);})
-              .catch(handleError);
+function playTrack() {
+   uri = document.getElementById('track-uri').value
+   spotify.getTrack(uri)
+          .then(player.playTrack);
 }
 
 function handleError(err) {
