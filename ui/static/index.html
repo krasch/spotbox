@@ -13,30 +13,35 @@
 <body>
 
 <div>
-   <input type="text" name="track" placeholder="spotify track uri" id="track-uri">
-   <input type="submit" value="Submit" id="select-track-button">
+   <input type="text" name="spotify-uri" placeholder="spotify uri" id="uri-to-add">
+   <input type="submit" value="Submit" id="add-uri-button">
 </div>
+
 
 <div>
    <img src="img/empty.png" height="200px" id="player-img">
    <div id="player-artist"></div>
    <div id="player-title"></div>
    <div id="player-album"></div>
-    <input type="submit" value="play" id="play-button" style="display:inline">
+   <input type="submit" value="play" id="play-button" style="display:inline">
    <input type="submit" value="pause" id="pause-button" style="display:inline">
+   <input type="submit" value="next" id="next-button" style="display:inline">
+   <input type="submit" value="clear" id="clear-button" style="display:inline">
 </div>
 
 
 <script>
 
-document.getElementById('select-track-button')
+document.getElementById('add-uri-button')
         .addEventListener("click", function() {
-              uri = ui.trackSelection.getTrack();
-              ui.trackSelection.clear();
-              player.playTrack(uri);});
+              uri = ui.uriSelection.getUri();
+              ui.uriSelection.clear();
+              player.add(uri);});
 
 document.getElementById('play-button').addEventListener("click", player.play);
 document.getElementById('pause-button').addEventListener("click", player.pause);
+document.getElementById('next-button').addEventListener("click", player.next);
+document.getElementById('clear-button').addEventListener("click", player.clear);
 
 function handleError(err) {
     console.log(err);
