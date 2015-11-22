@@ -22,11 +22,14 @@
   </head>
   <body>
     <a href="javascript:webSocketTest()">Connect by clicking here!</a>
-    <p>Use the console to send some commands like:</p>
+    <p>Use the console to send some JSON commands like:</p>
     <pre>
-      ws.send("track,spotify:track:34nJB4RMpMOuzS1IU9hUPp");
-      ws.send("play");
-      ws.send("pause");
+      ws.send('{"command": "add","uri": "spotify:track:2uki1VRt9gZs2za2VUoBIC"}');
+      ws.send('{"command": "add","uri": "spotify:track:3GfOAdcoc3X5GPiiXmpBjK"}');
+      ws.send('{"command": "play"}');
+      ws.send('{"command": "pause"}');
+      ws.send('{"command": "next"}');
     </pre>
+    The server will respond with its status updates as JSON events.
  </body>
 </html>
