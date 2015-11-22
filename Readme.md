@@ -9,7 +9,7 @@ Requires python > 3.4
     pip install pyalsaaudio
     pip install aiohttp
     cd ui/static/3rdparty/js
-    wget https://github.com/JMPerez/spotify-web-api-js/blob/master/src/spotify-web-api.js
+    wget https://raw.githubusercontent.com/JMPerez/spotify-web-api-js/master/src/spotify-web-api.js
 
 ## Configuring server
 Download a binary key from [spotify](https://devaccount.spotify.com/my-account/keys/) and put it into the `musikserver` directory.
