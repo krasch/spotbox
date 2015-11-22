@@ -43,10 +43,12 @@ function createSocket() {
     ws.onmessage = function (evt) {
       var msg = JSON.parse(evt.data);
 
-      if (msg["event"] == "track") {
-         spotify.getTrack(msg["uri"])
-                .then(ui.player.update, handleError);
-      }
+      if (msg["event"] == "track")
+         ui.player.update(msg["uri"])
+      else if (msg["event"] == "queued")
+         ui.player.displayQueue(msg["tracks"])
+      else
+        console.log(msg);
     };
 
     ws.onclose = function() {

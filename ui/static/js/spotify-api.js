@@ -2,12 +2,19 @@
 
 var spotifyApi = new SpotifyWebApi();
 
+var trackInfoCache = {}
+
 spotify = {
 
-   getTrack: function(trackURI) {
+   getTrackInfo: function(trackURI) {
+
+        if (trackURI in trackInfoCache)
+            return trackInfoCache[trackURI];
+
         var trackId = trackURI.replace("spotify:track:", "")
-        return spotifyApi.getTrack(trackId)
-                         .then(spotify.extractTrackInfo, handleError)
+        trackInfoCache[trackURI] = spotifyApi.getTrack(trackId)
+                                             .then(spotify.extractTrackInfo, handleError);
+        return trackInfoCache[trackURI];
    },
 
    getAlbumTracks: function(albumURI) {
@@ -18,10 +25,10 @@ spotify = {
 
    extractTrackInfo: function(trackData) {
       return {"uri": trackData["uri"],
-              "artist": trackData["artists"][0]["name"],
-              "album": trackData["album"]["name"],
-              "title": trackData["name"],
-              "cover": trackData["album"]["images"][0]["url"]}
+                   "artist": trackData["artists"][0]["name"],
+                   "album": trackData["album"]["name"],
+                   "title": trackData["name"],
+                   "cover": trackData["album"]["images"][0]["url"]};
    },
 
    extractTracks: function(albumData) {
