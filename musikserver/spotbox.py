@@ -24,8 +24,8 @@ class Spotbox:
             if timeout != 0:
                 self.process()
                 try:
-                    cmd = self.cmd_queue.get_nowait()
-                    self.process_command(cmd)
+                    data = self.cmd_queue.get_nowait()
+                    self.process_command(data['command'], data)
                 except Empty:
                     t = min(timeout, 100)
                     sleep(t / 1000.0)
@@ -42,19 +42,21 @@ class Spotbox:
         else:
             self.track = self.play_queue.popleft()
             self.next_track_prefetched = False
+            self.send_queue()
 
-    def process_command(self, cmd):
-        if cmd[0] == "track":
-            self.track = self.session.get_link(cmd[1]).as_track()
-        elif cmd[0] == "play":
+    def process_command(self, cmd, data):
+        if cmd == "track":
+            self.track = self.session.get_link(data['uri']).as_track()
+        elif cmd == "play":
             self.playing = True
-        elif cmd[0] == "pause":
+        elif cmd == "pause":
             self.playing = False
-        elif cmd[0] == "add":
-            self.play_queue.append(self.session.get_link(cmd[1]).as_track())
-        elif cmd[0] == "clear":
+        elif cmd == "add":
+            self.play_queue.append(self.session.get_link(data['uri']).as_track())
+            self.send_queue()
+        elif cmd == "clear":
             self.play_queue = deque()
-        elif cmd[0] == "next":
+        elif cmd == "next":
             self.next_track()
 
     def process(self):
@@ -68,7 +70,7 @@ class Spotbox:
 
         if self.track != None and self.track.is_loaded:
             self.session.player.load(self.track)
-            self.send("track", self.track.link.uri)
+            self.send("track", { "uri": self.track.link.uri })
             self.track = None
 
         if self.playing and (self.session.player.state == spotify.PlayerState.LOADED or
@@ -80,7 +82,12 @@ class Spotbox:
             self.send("paused")
             self.session.player.pause()
 
-    def send(self, *msg):
+    def send_queue(self):
+        self.send("queued", {"tracks": [ { "uri" : t.link.uri } for t in self.play_queue ]})
+
+    def send(self, event, data = {}):
+        msg = data.copy()
+        msg["event"] = event
         self.status_queue.put(msg)
 
     def command(self, cmd):

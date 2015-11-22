@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 import asyncio
 import spotbox
 import credentials
@@ -19,7 +20,7 @@ def wshandler(request):
     while True:
         msg = yield from resp.receive()
         if msg.tp == MsgType.text:
-            box.command([s.strip() for s in msg.data.split(",")])
+            box.command(json.loads(msg.data))
         else:
             break
 
@@ -33,7 +34,7 @@ def redirect(request):
 
 def brodcast(app, msg):
     for ws in app['sockets']:
-        ws.send_str(",".join(msg))
+        ws.send_str(json.dumps(msg))
 
 def consumer_thread(app, loop):
     def inner():
