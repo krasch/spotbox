@@ -13,6 +13,7 @@ class Spotbox:
         self.play_queue = deque()
         self.running = True
         self.track = None
+        self.next_track_prefetched = False
         self.audio = spotify.AlsaSink(self.session)
         self.playing = False
         self.session.on(spotify.SessionEvent.END_OF_TRACK, self.end_of_track)
@@ -40,6 +41,7 @@ class Spotbox:
             self.send("paused")
         else:
             self.track = self.play_queue.popleft()
+            self.next_track_prefetched = False
 
     def process_command(self, cmd):
         if cmd[0] == "track":
@@ -56,6 +58,10 @@ class Spotbox:
             self.next_track()
 
     def process(self):
+
+        if not self.next_track_prefetched and len(self.play_queue) > 0 and self.play_queue[0].is_loaded:
+            self.session.player.prefetch(self.play_queue[0])
+            self.next_track_prefetched = True
 
         if self.playing and self.session.player.state == spotify.PlayerState.UNLOADED and self.track == None and len(self.play_queue) > 0:
              self.next_track()
