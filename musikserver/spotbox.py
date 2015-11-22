@@ -58,6 +58,7 @@ class Spotbox:
             self.send_queue()
         elif cmd == "clear":
             self.play_queue = deque()
+            self.send_queue()
         elif cmd == "next":
             self.next_track()
         elif cmd == "state":
