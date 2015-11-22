@@ -1,6 +1,7 @@
 from threading import Thread
 from time import sleep
 from queue import Queue, Empty
+from collections import deque
 import spotify
 
 class Spotbox:
@@ -9,6 +10,7 @@ class Spotbox:
         self.session.login(username, password)
         self.cmd_queue = Queue()
         self.status_queue = Queue()
+        self.play_queue = deque()
         self.running = True
         self.track = None
         self.audio = spotify.AlsaSink(self.session)
@@ -29,9 +31,15 @@ class Spotbox:
             timeout = self.session.process_events()
 
     def end_of_track(self, not_used):
+        self.next_track()
+
+    def next_track(self):
         self.session.player.unload()
-        self.send("track")
-        self.send("paused")
+        if len(self.play_queue) == 0:
+            self.send("track")
+            self.send("paused")
+        else:
+            self.track = self.play_queue.popleft()
 
     def process_command(self, cmd):
         if cmd[0] == "track":
@@ -40,8 +48,18 @@ class Spotbox:
             self.playing = True
         elif cmd[0] == "pause":
             self.playing = False
+        elif cmd[0] == "add":
+            self.play_queue.append(self.session.get_link(cmd[1]).as_track())
+        elif cmd[0] == "clear":
+            self.play_queue = deque()
+        elif cmd[0] == "next":
+            self.next_track()
 
     def process(self):
+
+        if self.playing and self.session.player.state == spotify.PlayerState.UNLOADED and self.track == None and len(self.play_queue) > 0:
+             self.next_track()
+
         if self.track != None and self.track.is_loaded:
             self.session.player.load(self.track)
             self.send("track", self.track.link.uri)
