@@ -16,6 +16,7 @@ def wshandler(request):
     yield from resp.prepare(request)
     print('Client connected.')
     request.app['sockets'].append(resp)
+    box.command({"command": "state"})
 
     while True:
         msg = yield from resp.receive()
