@@ -13,7 +13,6 @@ ui.player = {
    },
 
    displayQueue: function(queue) {
-        console.log(queue);
         var queueElement =  document.getElementById('queue');
 
         // empty the old queue
