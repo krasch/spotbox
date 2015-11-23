@@ -1,23 +1,25 @@
+import sys
 from threading import Thread
 from time import sleep
-from queue import Queue, Empty
+from queue import Queue, Empty, Full
 from collections import deque
 import spotify
 
 class Spotbox:
-    def __init__(self, username, password):
+    def __init__(self, username, password, buffer_size = 8):
         self.session = spotify.Session()
         self.session.login(username, password)
         self.cmd_queue = Queue()
         self.status_queue = Queue()
+        self.sound_queue = Queue(buffer_size)
         self.play_queue = deque()
         self.running = True
         self.track = None
         self.current_track = None
         self.next_track_prefetched = False
-        self.audio = spotify.AlsaSink(self.session)
         self.playing = False
         self.session.on(spotify.SessionEvent.END_OF_TRACK, self.end_of_track)
+        self.session.on(spotify.SessionEvent.MUSIC_DELIVERY, self.music_delivery)
 
     def run(self):
         timeout = 0
@@ -31,6 +33,13 @@ class Spotbox:
                     t = min(timeout, 100)
                     sleep(t / 1000.0)
             timeout = self.session.process_events()
+
+    def music_delivery(self, not_used, audio_format, frames, num_frames):
+        try:
+            self.sound_queue.put_nowait((audio_format.sample_rate, audio_format.channels, audio_format.frame_size(), frames, num_frames))
+            return num_frames
+        except Full:
+            return 0
 
     def end_of_track(self, not_used):
         self.next_track()
@@ -112,3 +121,37 @@ class Spotbox:
 
     def command(self, cmd):
         self.cmd_queue.put(cmd)
+
+class Alsa:
+    def __init__(self, sound_queue, device='default'):
+        self._device_name = device
+
+        import alsaaudio  # Crash early if not available
+        self._alsaaudio = alsaaudio
+        self._device = None
+        self._sound_queue = sound_queue
+        self.running = True
+
+    def run(self):
+        while(self.running):
+            self._music_delivery(*self._sound_queue.get())
+
+        if self._device is not None:
+            self._device.close()
+            self._device = None
+
+    def _music_delivery(self, sample_rate, channels, frame_size, frames, num_frames):
+        if self._device is None:
+            if hasattr(self._alsaaudio, 'pcms'):  # pyalsaaudio >= 0.8
+                self._device = self._alsaaudio.PCM(device=self._device_name)
+            else:  # pyalsaaudio == 0.7
+                self._device = self._alsaaudio.PCM(card=self._device_name)
+            if sys.byteorder == 'little':
+                self._device.setformat(self._alsaaudio.PCM_FORMAT_S16_LE)
+            else:
+                self._device.setformat(self._alsaaudio.PCM_FORMAT_S16_BE)
+            self._device.setrate(sample_rate)
+            self._device.setchannels(channels)
+            self._device.setperiodsize(num_frames * frame_size)
+
+        self._device.write(frames)

@@ -67,7 +67,6 @@ def finish(app, srv, handler):
     yield from handler.finish_connections()
     yield from srv.wait_closed()
 
-
 with open("config.yaml", 'r') as config:
     config = yaml.load(config)
     credentials = config["spotify"]
@@ -75,12 +74,14 @@ with open("config.yaml", 'r') as config:
     port = config["server"]["port"]
 
 box = spotbox.Spotbox(credentials["username"], credentials["password"])
+alsa = spotbox.Alsa(box.sound_queue)
 
 loop = asyncio.get_event_loop()
 app, srv, handler = loop.run_until_complete(init(loop, host, port))
 
 loop.run_in_executor(None, consumer_thread(app, loop))
 loop.run_in_executor(None, box.run)
+loop.run_in_executor(None, alsa.run)
 try:
     loop.run_forever()
 except KeyboardInterrupt:
