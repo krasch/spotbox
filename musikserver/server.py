@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
 import json
+import yaml
 import asyncio
-import spotbox
-import credentials
 from aiohttp.web import Application, Response, MsgType, WebSocketResponse, HTTPFound
+
+import spotbox
 
 @asyncio.coroutine
 def wshandler(request):
@@ -45,15 +46,15 @@ def consumer_thread(app, loop):
     return inner
 
 @asyncio.coroutine
-def init(loop):
+def init(loop, host, port):
     app = Application(loop=loop)
     app['sockets'] = []
     app.router.add_route('GET', '/ws', wshandler)
     app.router.add_route('GET', '/', redirect)
     app.router.add_static('/', '../ui/static')
     handler = app.make_handler()
-    srv = yield from loop.create_server(handler, '127.0.0.1', 8080)
-    print("Server started at http://127.0.0.1:8080")
+    srv = yield from loop.create_server(handler, host, port)
+    print("Server started at {}:{}".format(host, port))
     return app, srv, handler
 
 @asyncio.coroutine
@@ -66,10 +67,17 @@ def finish(app, srv, handler):
     yield from handler.finish_connections()
     yield from srv.wait_closed()
 
-box = spotbox.Spotbox(credentials.username, credentials.password)
+
+with open("config.yaml", 'r') as config:
+    config = yaml.load(config)
+    credentials = config["spotify"]
+    host = config["server"]["host"]
+    port = config["server"]["port"]
+
+box = spotbox.Spotbox(credentials["username"], credentials["password"])
 
 loop = asyncio.get_event_loop()
-app, srv, handler = loop.run_until_complete(init(loop))
+app, srv, handler = loop.run_until_complete(init(loop, host, port))
 
 loop.run_in_executor(None, consumer_thread(app, loop))
 loop.run_in_executor(None, box.run)

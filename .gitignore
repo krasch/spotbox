@@ -60,3 +60,4 @@ target/
 /musikserver/credentials.py
 /musikserver/spotify_appkey.key
 /musikserver/tmp/
+/musikserver/config.yaml
