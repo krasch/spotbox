@@ -16,7 +16,7 @@ Requires python > 3.4
 
 Download a binary key from [spotify](https://devaccount.spotify.com/my-account/keys/) and put it into the `musikserver` directory.
 
-Copy `musikserver/credentials.default` to  `musikserver/credentials.py" and set your spotify credentials:
+Copy `musikservergitt` to  `musikserver/credentials.py" and set your spotify credentials:
 
 ## Running server
 
