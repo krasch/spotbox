@@ -1,0 +1,8 @@
+.hidden {
+    visibility: hidden;
+}
+
+.center {
+    margin: auto;
+    width: 40%;
+}
