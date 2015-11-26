@@ -2,42 +2,71 @@
 
 var spotifyApi = new SpotifyWebApi();
 
-var trackInfoCache = {}
+var spotify = {}
 
-spotify = {
+spotify.cache = {}
 
-   getTrackInfo: function(trackURI) {
+spotify.track = {
 
-        if (trackURI in trackInfoCache)
-            return trackInfoCache[trackURI];
+   resolve: function(trackURI) {
 
-        var trackId = trackURI.replace("spotify:track:", "")
-        trackInfoCache[trackURI] = spotifyApi.getTrack(trackId)
-                                             .then(spotify.extractTrackInfo, handleError);
-        return trackInfoCache[trackURI];
+        if (!(trackURI in spotify.cache)) {
+            var trackId = trackURI.replace("spotify:track:", "")
+            spotify.cache[trackURI] = spotifyApi.getTrack(trackId)
+                                                .then(spotify.track.summarize, handleError);
+        }
+
+        return spotify.cache[trackURI];
    },
 
-   getAlbumTracks: function(albumURI) {
+   summarize: function(trackData) {
+      return {"uri": trackData["uri"],
+              "artist": trackData["artists"][0]["name"],
+              "album": trackData["album"]["name"],
+              "title": trackData["name"],
+              "cover": trackData["album"]["images"][0]["url"]};
+   },
+}
+
+spotify.album = {
+   listTracks: function(albumURI) {
        var albumId = albumURI.replace("spotify:album:", "")
        return spotifyApi.getAlbum(albumId)
-                        .then(spotify.extractTracks, handleError);
+                        .then(function (data) {return spotify.util.extractURIs(data["tracks"]["items"])})
+                        .catch(handleError)
    },
 
-   extractTrackInfo: function(trackData) {
-      return {"uri": trackData["uri"],
-                   "artist": trackData["artists"][0]["name"],
-                   "album": trackData["album"]["name"],
-                   "title": trackData["name"],
-                   "cover": trackData["album"]["images"][0]["url"]};
-   },
+    search: function(artist) {
+        return spotifyApi.searchAlbums('artist:'+artist)
+                         .then(function (data) {return spotify.util.extractURIs(data["albums"]["items"])})
+                         .catch(handleError)
+    },
 
-   extractTracks: function(albumData) {
-      // todo if album has more than 50 tracks also need to check the next page
-      var tracks = albumData["tracks"]["items"];
+    resolve: function(albumURI) {
+        if (!(albumURI in spotify.cache)) {
+            var albumId = albumURI.replace("spotify:album:", "")
+            spotify.cache[albumURI] = spotifyApi.getAlbum(albumId)
+                                                .then(spotify.album.summarize, handleError);
+        }
+
+        return spotify.cache[albumURI];
+    },
+
+    summarize: function(albumData) {
+      return {"uri": albumData["uri"],
+              "artist": albumData["artists"][0]["name"],
+              "title": albumData["name"],
+              "cover": albumData["images"][0]["url"]};
+    }
+}
+
+spotify.util = {
+   extractURIs: function(items) {
       var uris = [];
-      for (i in tracks){
-          uris.push(tracks[i]["uri"]);
+      for (i in items){
+          uris.push(items[i]["uri"]);
       }
       return uris;
-   }
+   },
+
 }
