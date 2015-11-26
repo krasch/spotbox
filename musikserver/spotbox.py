@@ -6,7 +6,7 @@ from collections import deque
 import spotify
 
 class Spotbox:
-    def __init__(self, username, password, buffer_size = 8):
+    def __init__(self, username, password, buffer_size):
         self.session = spotify.Session()
         self.session.login(username, password)
         self.cmd_queue = Queue()

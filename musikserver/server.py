@@ -72,8 +72,9 @@ with open("config.yaml", 'r') as config:
     credentials = config["spotify"]
     host = config["server"]["host"]
     port = config["server"]["port"]
+    buffer_size = config["audio"]["buffer_size"]
 
-box = spotbox.Spotbox(credentials["username"], credentials["password"])
+box = spotbox.Spotbox(credentials["username"], credentials["password"], buffer_size)
 alsa = spotbox.Alsa(box.sound_queue)
 
 loop = asyncio.get_event_loop()

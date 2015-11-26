@@ -7,3 +7,11 @@ server:
 spotify:
   username: your_spotify_username
   password: your_spotify_password
+
+audio:
+  # This value is optimzed for "powerful" computers.
+  # For less powerful computers (such as the
+  # raspberry pi) a value of 32 - 64 might be more appropriate.
+  # The higher the value, the more time you have to wait until
+  # the audio stops or changes when e.g. changing to next track.
+  buffer_size: 8
