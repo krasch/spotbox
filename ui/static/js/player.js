@@ -1,4 +1,5 @@
-socket = createSocket()
+socketUri = "ws://"+window.location.host+"/ws"
+socket = createSocket(socketUri)
 
 player = {
 
@@ -32,9 +33,9 @@ player = {
    }
 }
 
-function createSocket() {
+function createSocket(uri) {
 
-    ws = new WebSocket("ws://localhost:8080/ws");
+    ws = new WebSocket(uri);
 
     ws.onopen = function() {
           console.log("Socket opened.")

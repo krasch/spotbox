@@ -1,0 +1,9 @@
+# configure spotbox here and store your config as config.yaml
+
+server:
+  host: localhost
+  port: 8080
+
+spotify:
+  username: your_spotify_username
+  password: your_spotify_password
