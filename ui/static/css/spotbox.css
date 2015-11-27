@@ -6,3 +6,7 @@
     margin: auto;
     width: 40%;
 }
+
+.add-album-link {
+    cursor: pointer;
+}

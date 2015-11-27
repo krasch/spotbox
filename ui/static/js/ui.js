@@ -91,15 +91,12 @@ ui.search = {
                   var div = document.createElement("div");
                   resultsElement.appendChild(div);
 
-                  var a = document.createElement("a");
-                  a.href = "";
-                  div.appendChild(a);
-
                   var img = document.createElement("img");
                   img.width = "100";
                   img.src = album.cover;
                   img.addEventListener("click", function() {player.add(album["uri"]);});
-                  a.appendChild(img);
+                  img.className = img.className + " add-album-link";
+                  div.appendChild(img);
 
                   div.appendChild(document.createElement("br"));
 
