@@ -7,7 +7,7 @@ player = {
        if (uri.indexOf("spotify:track") > -1)
            socket.send(JSON.stringify({"command": "add","uri": uri}));
        else if (uri.indexOf("spotify:album") > -1) {
-           spotify.getAlbumTracks(uri)
+           spotify.album.listTracks(uri)
                   .then(function(tracks) {
                      for (i in tracks)
                         socket.send(JSON.stringify({"command": "add","uri": tracks[i]}));
