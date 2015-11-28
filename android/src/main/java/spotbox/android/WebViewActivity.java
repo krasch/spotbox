@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.webkit.ConsoleMessage;
-import android.util.Log;
 
 public class WebViewActivity extends Activity {
 
@@ -18,18 +16,15 @@ public class WebViewActivity extends Activity {
                 setContentView(R.layout.webview);
 
                 webView = (WebView) findViewById(R.id.webview);
-                webView.setWebViewClient(new WebViewClient(){
-                    public boolean onConsoleMessage(ConsoleMessage cm) {
-                        Log.d("spotbox", cm.message() + " -- From line " + cm.lineNumber() + " of " + cm.sourceId() );
-                        return true;
-                      }});
-
+                webView.setWebViewClient(new WebViewClient());
 
                 webView.getSettings().setJavaScriptEnabled(true);
-                webView.loadUrl("http://192.168.1.134:8080");
+                webView.addJavascriptInterface(new ConsoleLogger(this), "logger");
+
+
+                webView.loadUrl("http://192.168.0.11:8080/ws-example.html");
 
         }
-
 }
 
 

@@ -51,7 +51,7 @@ def init(loop, host, port):
     app['sockets'] = []
     app.router.add_route('GET', '/ws', wshandler)
     app.router.add_route('GET', '/', redirect)
-    app.router.add_static('/', '../ui/static')
+    app.router.add_static('/', '../html5/static')
     handler = app.make_handler()
     srv = yield from loop.create_server(handler, host, port)
     print("Server started at {}:{}".format(host, port))
