@@ -1,8 +1,6 @@
 /*
 Take javascript logging messages and show them in android log.
 Small workaround for bug in some HTC phones that do not forward console log messages.
-
-You need to add 'console.log = logger.onConsoleMessage;' to your javascript code.
 */
 package spotbox.android;
 

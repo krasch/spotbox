@@ -6,69 +6,59 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.util.Log;
 
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 
-
 public class WebViewActivity extends Activity {
 
+        private final String IP = "192.168.1.121";
+        private final String PORT = "8080";
+
+        private final String playerURI = "http://"+IP+":"+PORT;
+        private final String webSocketURI = "ws://"+IP+":"+PORT+"/ws";
+
         private WebView webView;
-        private WebSocketClient mWebSocketClient;
+        private SocketBinding socket;
 
         public void onCreate(Bundle savedInstanceState) {
 
                 super.onCreate(savedInstanceState);
-
-                //connectWebSocket();
-
                 setContentView(R.layout.webview);
 
                 webView = (WebView) findViewById(R.id.webview);
-                webView.setWebViewClient(new WebViewClient());
                 webView.getSettings().setJavaScriptEnabled(true);
+
+                socket = new SocketBinding(parseURI(webSocketURI), webView, this);
+                webView.addJavascriptInterface(socket, "androidSocket");
+
+                // as soon as website has finished loading, connect the socket
+                // would miss initial messages from socket server if connecting before page has loaded
+
+                webView.setWebViewClient(new WebViewClient(){
+                      @Override
+                      public void onPageFinished(WebView view, String url) {
+                          Log.i("spotbox", url);
+                          socket.connect();
+                      }
+                });
 
                 // map console logger to adb logger
                 webView.addJavascriptInterface(new ConsoleLogger(this), "logger");
                 webView.loadUrl("javascript:console={};console.log = function(msg) {logger.onConsoleMessage(msg);};");
 
-                webView.loadUrl("http://192.168.1.121:8080/test.html");
-
+                // load the player
+                webView.loadUrl(playerURI);
         }
 
-        private void connectWebSocket() {
-            URI uri;
+        private URI parseURI(String uriString) {
+            URI webSocketURI = null;
             try {
-                uri = new URI("ws://192.168.0.11:8080/ws");
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-                return;
+                 return new URI(uriString);
+            }
+            catch (URISyntaxException e) {
+                 throw new RuntimeException("Bad uri, better die directly");
             }
 
-            mWebSocketClient = new WebSocketClient(uri) {
-                @Override
-                public void onOpen(ServerHandshake serverHandshake) {
-                    Log.i("Websocket", "Opened");
-                    mWebSocketClient.send("{\"command\": \"add\",\"uri\": \"spotify:track:2uki1VRt9gZs2za2VUoBIC\"}");
-                }
-
-                @Override
-                public void onMessage(String s) {
-                }
-
-                @Override
-                public void onClose(int i, String s, boolean b) {
-                    Log.i("Websocket", "Closed " + s);
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    Log.i("Websocket", "Error " + e.getMessage());
-                }
-            };
-            mWebSocketClient.connect();
         }
 }
 
