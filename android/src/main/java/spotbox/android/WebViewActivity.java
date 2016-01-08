@@ -7,14 +7,19 @@ import android.webkit.WebViewClient;
 import android.util.Log;
 
 import java.net.URI;
+import java.net.URL;
 import java.net.URISyntaxException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.IOException;
 
 public class WebViewActivity extends Activity {
 
         private final String IP = "192.168.1.121";
         private final String PORT = "8080";
 
-        private final String playerURI = "http://"+IP+":"+PORT;
+        private final String playerBaseURI = "http://"+IP+":"+PORT+"/";
         private final String webSocketURI = "ws://"+IP+":"+PORT+"/ws";
 
         private WebView webView;
@@ -33,12 +38,10 @@ public class WebViewActivity extends Activity {
 
                 // as soon as website has finished loading, connect the socket
                 // would miss initial messages from socket server if connecting before page has loaded
-
                 webView.setWebViewClient(new WebViewClient(){
                       @Override
                       public void onPageFinished(WebView view, String url) {
-                          Log.i("spotbox", url);
-                          socket.connect();
+                          //socket.connect();
                       }
                 });
 
@@ -47,10 +50,10 @@ public class WebViewActivity extends Activity {
                 webView.loadUrl("javascript:console={};console.log = function(msg) {logger.onConsoleMessage(msg);};");
 
                 // load the player
-                webView.loadUrl(playerURI);
+                webView.loadUrl("file:///android_asset/test.html");
         }
 
-        private URI parseURI(String uriString) {
+        private static URI parseURI(String uriString) {
             URI webSocketURI = null;
             try {
                  return new URI(uriString);
