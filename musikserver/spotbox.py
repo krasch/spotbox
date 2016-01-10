@@ -1,4 +1,5 @@
 import sys
+import traceback
 from threading import Thread
 from time import sleep
 from queue import Queue, Empty, Full
@@ -22,17 +23,21 @@ class Spotbox:
         self.session.on(spotify.SessionEvent.MUSIC_DELIVERY, self.music_delivery)
 
     def run(self):
-        timeout = 0
-        while self.running:
-            if timeout != 0:
-                self.process()
-                try:
-                    data = self.cmd_queue.get_nowait()
-                    self.process_command(data['command'], data)
-                except Empty:
-                    t = min(timeout, 100)
-                    sleep(t / 1000.0)
-            timeout = self.session.process_events()
+        try:
+            timeout = 0
+            while self.running:
+                if timeout != 0:
+                    self.process()
+                    try:
+                        data = self.cmd_queue.get_nowait()
+                        self.process_command(data['command'], data)
+                    except Empty:
+                        t = min(timeout, 100)
+                        sleep(t / 1000.0)
+                timeout = self.session.process_events()
+        except Exception as e:
+            print("Unexpected error: " + traceback.format_exc())
+            raise
 
     def music_delivery(self, not_used, audio_format, frames, num_frames):
         try:
