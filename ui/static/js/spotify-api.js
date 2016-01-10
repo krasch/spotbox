@@ -19,6 +19,14 @@ spotify.track = {
         return spotify.cache[trackURI];
    },
 
+   resolveAll: function(trackList) {
+        var resolvers = [];
+        for (i in trackList) {
+            resolvers.push(spotify.track.resolve(trackList[i]));
+        }
+        return Promise.all(resolvers);
+   },
+
    summarize: function(trackData) {
       return {"uri": trackData["uri"],
               "artist": trackData["artists"][0]["name"],
@@ -44,12 +52,19 @@ spotify.album = {
 
     resolve: function(albumURI) {
         if (!(albumURI in spotify.cache)) {
-            var albumId = albumURI.replace("spotify:album:", "")
+            var albumId = albumURI.replace("spotify:album:", "");
             spotify.cache[albumURI] = spotifyApi.getAlbum(albumId)
                                                 .then(spotify.album.summarize, handleError);
         }
-
         return spotify.cache[albumURI];
+    },
+
+    resolveAll: function(albumList) {
+        var resolvers = [];
+        for (i in albumList) {
+            resolvers.push(spotify.album.resolve(albumList[i]));
+        }
+        return Promise.all(resolvers);
     },
 
     summarize: function(albumData) {
@@ -68,12 +83,4 @@ spotify.util = {
         }
         return uris;
     },
-
-    resolveAll: function(uris, resolverFunction) {
-        var resolvers = []
-        for (i in uris) {
-            resolvers.push(resolverFunction(uris[i]));
-        }
-        return Promise.all(resolvers)
-   }
 }

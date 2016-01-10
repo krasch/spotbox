@@ -8,11 +8,11 @@
 
         function updateQueue(queue) {
            queue = spotify.util.extractURIs(queue);
-           spotify.util.resolveAll(queue, spotify.track.resolve)
-                       .then(updateUI);
+           spotify.track.resolveAll(queue)
+                        .then(showQueue);
         }
 
-        function updateUI(queue) {
+        function showQueue(queue) {
             self.tracks = queue;
             self.update();
         }
