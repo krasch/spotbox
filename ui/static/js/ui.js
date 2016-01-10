@@ -32,30 +32,6 @@ ui.player = {
                 });
    },
 
-   displayQueue: function(queue) {
-        var queueElement =  document.getElementById('queue');
-
-        // empty the old queue
-       while (queueElement.firstChild) {
-           queueElement.removeChild(queueElement.firstChild);
-       }
-
-        for (i in queue) {
-           var uri = queue[i]["uri"];
-
-           var div = document.createElement("div");
-           queueElement.appendChild(div);
-
-           spotify.track.resolve(uri)
-                  .then(function(track) {
-                      var text = document.createTextNode(track.artist + " - " +  track.title);
-                      div.appendChild(text);
-                      div.appendChild(document.createElement("br"));
-                  });
-
-        }
-   }
-
 };
 
 ui.uriSelection = {

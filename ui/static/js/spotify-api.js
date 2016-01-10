@@ -61,12 +61,19 @@ spotify.album = {
 }
 
 spotify.util = {
-   extractURIs: function(items) {
-      var uris = [];
-      for (i in items){
-          uris.push(items[i]["uri"]);
-      }
-      return uris;
-   },
+    extractURIs: function(items) {
+        var uris = [];
+        for (i in items){
+              uris.push(items[i]["uri"]);
+        }
+        return uris;
+    },
 
+    resolveAll: function(uris, resolverFunction) {
+        var resolvers = []
+        for (i in uris) {
+            resolvers.push(resolverFunction(uris[i]));
+        }
+        return Promise.all(resolvers)
+   }
 }

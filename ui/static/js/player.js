@@ -2,6 +2,7 @@ socketUri = "ws://"+window.location.host+"/ws"
 socket = createSocket(socketUri)
 
 player = riot.observable()
+
 player.add = function(uri) {
     if (uri.indexOf("spotify:track") > -1)
         socket.send(JSON.stringify({"command": "add","uri": uri}));

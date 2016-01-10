@@ -1,11 +1,20 @@
 <queue>
-    <div each={ item, i in items }>{ item }</div>
-    this.items = ["test", "abc", "cde"]
+    <div each={ tracks }>{ artist + " - " + title}<br/></div>
 
-    this.on('update', function(){ console.log("queue loaded")});
+    <script>
+        var self = this;
 
-    this.on('bla', function(){console.log("bla")});
-    /*function bla() {
-        console.log("bla");
-    }*/
+        opts.on("queued", updateQueue);
+
+        function updateQueue(queue) {
+           queue = spotify.util.extractURIs(queue);
+           spotify.util.resolveAll(queue, spotify.track.resolve)
+                       .then(updateUI);
+        }
+
+        function updateUI(queue) {
+            self.tracks = queue;
+            self.update();
+        }
+    </script>
 </queue>
