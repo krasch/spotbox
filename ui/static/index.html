@@ -14,6 +14,7 @@
      <script type="riot/tag" src="js/queue.tag"></script>
      <script type="riot/tag" src="js/search.tag"></script>
      <script type="riot/tag" src="js/uri-input.tag"></script>
+     <script type="riot/tag" src="js/control.tag"></script>
 
      <link rel="stylesheet" href="css/spotbox.css">
 </head>
@@ -27,11 +28,6 @@
     </div>
 
     <br/>
-
-    <div id="uri-tab">
-       <input type="text" name="spotify-uri" placeholder="spotify uri" id="uri-to-add">
-       <input type="submit" value="Add" id="add-uri-button">
-    </div>
 
     <div id="player-tab">
      <div>
@@ -52,7 +48,7 @@
     <queue></queue>
     <search></search>
     <uri-input></uri-input>
-
+    <control></control>
 </div>
 
 
@@ -61,6 +57,7 @@
 riot.mount('queue', player);
 riot.mount('search', player);
 riot.mount('uri-input', player);
+riot.mount('control', player);
 </script>
 
 <script>
@@ -78,22 +75,6 @@ document.getElementById('clear-button').addEventListener("click", player.clear);
 
 // Set up player events
 player.on("track", ui.player.update);
-
-// search tab actions
-/*search = function() {
-    artist = ui.search.getSearchPhrase();
-    ui.search.clear();
-    spotify.album.search(artist)
-           .then(ui.search.displayResults);
-    return false;
-}*/
-
-// add uri tab actions
-document.getElementById('add-uri-button')
-        .addEventListener("click", function() {
-              uri = ui.uriSelection.getUri();
-              ui.uriSelection.clear();
-              player.add(uri);});
 
 function handleError(err) {
     console.log(err);

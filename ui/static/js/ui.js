@@ -1,8 +1,5 @@
 ui = {
    hideAll: function() {
-        //document.getElementById('search-tab').style.display = "none";
-        document.getElementById('player-tab').style.display = "none";
-        document.getElementById('uri-tab').style.display = "none";
    },
 
    showPlayer: function() {
