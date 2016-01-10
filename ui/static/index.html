@@ -5,10 +5,14 @@
     <title></title>
 
      <script type="text/javascript" charset="utf-8" src="3rdparty/js/spotify-web-api.js"></script>
+     <script src="https://cdn.rawgit.com/riot/riot/master/riot+compiler.min.js"></script>
 
      <script type="text/javascript" charset="utf-8" src="js/player.js"></script>
      <script type="text/javascript" charset="utf-8" src="js/spotify-api.js"></script>
      <script type="text/javascript" charset="utf-8" src="js/ui.js"></script>
+
+     <script type="riot/tag" src="js/app.tag"></script>
+     <script type="riot/tag" src="js/queue.tag"></script>
 
      <link rel="stylesheet" href="css/spotbox.css">
 </head>
@@ -53,7 +57,19 @@
       <br/>
        <div id="queue"></div>
     </div>
+    <app></app>
 </div>
+
+
+<script>
+
+stupidSocket = {
+   //send: function(stuff) {console.log("sending")};
+}
+
+riot.mount('app', stupidSocket);
+
+</script>
 
 <script>
 
