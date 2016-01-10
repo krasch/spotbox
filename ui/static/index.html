@@ -85,6 +85,9 @@ document.getElementById('pause-button').addEventListener("click", player.pause);
 document.getElementById('next-button').addEventListener("click", player.next);
 document.getElementById('clear-button').addEventListener("click", player.clear);
 
+// Set up player events
+player.on("track", ui.player.update);
+player.on("queued", ui.player.displayQueue);
 
 // search tab actions
 document.getElementById('search-button')
