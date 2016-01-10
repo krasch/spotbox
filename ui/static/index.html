@@ -24,8 +24,10 @@
     <br/>
 
     <div id="search-tab">
-        <input type="text" name="search-phrase" placeholder="artist name" id="search-phrase">
-       <input type="submit" value="Search" id="search-button">
+        <form onsubmit="return search();">
+            <input type="text" name="search-phrase" placeholder="artist name" id="search-phrase">
+            <input type="submit" value="Search" id="search-button">
+        </form>
 
         <br/>
 
@@ -71,13 +73,13 @@ document.getElementById('clear-button').addEventListener("click", player.clear);
 
 
 // search tab actions
-document.getElementById('search-button')
-        .addEventListener("click", function() {
-            artist = ui.search.getSearchPhrase();
-            ui.search.clear();
-            spotify.album.search(artist)
-                   .then(ui.search.displayResults);
-        });
+search = function() {
+    artist = ui.search.getSearchPhrase();
+    ui.search.clear();
+    spotify.album.search(artist)
+           .then(ui.search.displayResults);
+    return false;
+}
 
 // add uri tab actions
 document.getElementById('add-uri-button')
