@@ -11,9 +11,9 @@
      <script type="text/javascript" charset="utf-8" src="js/spotify-api.js"></script>
      <script type="text/javascript" charset="utf-8" src="js/ui.js"></script>
 
-     <script type="riot/tag" src="js/app.tag"></script>
      <script type="riot/tag" src="js/queue.tag"></script>
      <script type="riot/tag" src="js/search.tag"></script>
+     <script type="riot/tag" src="js/uri-input.tag"></script>
 
      <link rel="stylesheet" href="css/spotbox.css">
 </head>
@@ -51,6 +51,7 @@
 
     <queue></queue>
     <search></search>
+    <uri-input></uri-input>
 
 </div>
 
@@ -59,7 +60,7 @@
 
 riot.mount('queue', player);
 riot.mount('search', player);
-
+riot.mount('uri-input', player);
 </script>
 
 <script>
