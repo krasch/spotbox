@@ -9,12 +9,13 @@
 
      <script type="text/javascript" charset="utf-8" src="js/player.js"></script>
      <script type="text/javascript" charset="utf-8" src="js/spotify-api.js"></script>
-     <script type="text/javascript" charset="utf-8" src="js/ui.js"></script>
 
+     <script type="riot/tag" src="js/control.tag"></script>
+     <script type="riot/tag" src="js/current.tag"></script>
      <script type="riot/tag" src="js/queue.tag"></script>
      <script type="riot/tag" src="js/search.tag"></script>
      <script type="riot/tag" src="js/uri-input.tag"></script>
-     <script type="riot/tag" src="js/control.tag"></script>
+
 
      <link rel="stylesheet" href="css/spotbox.css">
 </head>
@@ -45,19 +46,22 @@
        <div id="queue"></div>
     </div>
 
+    <control></control>
+    <current></current>
     <queue></queue>
     <search></search>
     <uri-input></uri-input>
-    <control></control>
 </div>
 
 
 <script>
 
+riot.mount('control', player);
+riot.mount('current', player);
 riot.mount('queue', player);
 riot.mount('search', player);
 riot.mount('uri-input', player);
-riot.mount('control', player);
+
 </script>
 
 <script>
