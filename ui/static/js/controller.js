@@ -1,5 +1,7 @@
-socketUri = "ws://"+window.location.host+"/ws"
-socket = createSocket(socketUri)
+var socketUri = "ws://"+window.location.host+"/ws"
+
+// placeholder, will be overwritten when socket has been created
+socket = {}
 
 controller = riot.observable()
 
@@ -32,17 +34,16 @@ controller.clear = function() {
     socket.send(JSON.stringify({"command": "clear"}));
 }
 
-function createSocket(uri) {
+function createSocket() {
 
-    ws = new WebSocket(uri);
+    socket = new WebSocket(socketUri);
 
-    ws.onopen = function() {
+    socket.onopen = function() {
         console.log("Socket opened.")
     };
 
-    ws.onmessage = function (evt) {
+    socket.onmessage = function (evt) {
         var msg = JSON.parse(evt.data);
-
         if (msg["event"] == "track")
             controller.trigger("track", msg["uri"])
         else if (msg["event"] == "queued")
@@ -51,9 +52,7 @@ function createSocket(uri) {
             console.log(msg);
     };
 
-    ws.onclose = function() {
+    socket.onclose = function() {
         console.log("Socket closed.");
     };
-
-    return ws;
 }

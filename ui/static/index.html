@@ -29,24 +29,41 @@
        <a href="#uri-input"><button type="button">Enter URI</button></a>
     </div>
 
-    <div id="content"></div>
+    <player id="player"></player>
+    <search id="search"></search>
+    <uri-input id="uri-input"></uri-input>
 </div>
 
 
 <script>
-
-// extremely simple router - take a path and mount a tag with the same name
-riot.route(function(path){riot.mount('div#content', path, controller);});
-riot.route.start(true)
-
-// player is the first page user will see
-riot.route('player');
-
+function showTab(tabId) {
+    document.getElementById("player").style.display = "none";
+    document.getElementById("search").style.display = "none";
+    document.getElementById("uri-input").style.display = "none";
+    document.getElementById(tabId).style.display = "block";
+}
 
 function handleError(err) {
     console.log(err);
 }
 
+// mount all UI elements
+riot.mount('player', controller);
+riot.mount('search', controller);
+riot.mount('uri-input', controller);
+
+// extremely simple router - take a path and make tab with that id visible, make all other tabs invisible
+// do not want to riot mount/unmount here because tags would loose their current state
+riot.route(showTab);
+riot.route.start(true)
+
+// player is the first page user will see
+riot.route('player');
+
+// there are some timing issues between riot mounting and the socket - sometimes mounting takes to long and the first
+// messages from the socket are lost.
+// waiting 100ms before creating the socket connection seems to help but is a bit unsatisfactory
+setTimeout(function(){createSocket();}, 100)
 
 </script>
 </body>
