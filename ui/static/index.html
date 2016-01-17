@@ -5,94 +5,35 @@
     <title></title>
 
      <script type="text/javascript" charset="utf-8" src="3rdparty/js/spotify-web-api.js"></script>
+     <script src="https://cdn.rawgit.com/riot/riot/master/riot+compiler.min.js"></script>
 
-     <script type="text/javascript" charset="utf-8" src="js/player.js"></script>
+     <script type="text/javascript" charset="utf-8" src="js/controller.js"></script>
      <script type="text/javascript" charset="utf-8" src="js/spotify-api.js"></script>
-     <script type="text/javascript" charset="utf-8" src="js/ui.js"></script>
+
+     <script type="riot/tag" src="js/app.tag"></script>
+     <script type="riot/tag" src="js/player-control.tag"></script>
+     <script type="riot/tag" src="js/current.tag"></script>
+     <script type="riot/tag" src="js/queue.tag"></script>
+     <script type="riot/tag" src="js/search.tag"></script>
+     <script type="riot/tag" src="js/uri-input.tag"></script>
+
 
      <link rel="stylesheet" href="css/spotbox.css">
 </head>
 <body>
 
 <div class="center">
-    <div id="top-bar">
-       <input type="submit" value="Player" id="player-tab-button" style="display:inline">
-       <input type="submit" value="Search" id="search-tab-button" style="display:inline">
-       <input type="submit" value="Enter URI" id="uri-tab-button" style="display:inline">
-    </div>
-
-    <br/>
-
-    <div id="search-tab">
-        <form onsubmit="return search();">
-            <input type="text" name="search-phrase" placeholder="artist name" id="search-phrase">
-            <input type="submit" value="Search" id="search-button">
-        </form>
-
-        <br/>
-
-        <div id="search-results">
-        </div>
-    </div>
-
-    <div id="uri-tab">
-       <input type="text" name="spotify-uri" placeholder="spotify uri" id="uri-to-add">
-       <input type="submit" value="Add" id="add-uri-button">
-    </div>
-
-    <div id="player-tab">
-     <div>
-       <img src="img/empty.png" height="200px" id="player-img">
-       <div id="player-artist"></div>
-       <div id="player-title"></div>
-       <div id="player-album"></div>
-       <input type="submit" value="play" id="play-button" style="display:inline">
-       <input type="submit" value="pause" id="pause-button" style="display:inline">
-       <input type="submit" value="next" id="next-button" style="display:inline">
-       <input type="submit" value="clear" id="clear-button" style="display:inline">
-     </div>
-
-      <br/>
-       <div id="queue"></div>
-    </div>
+    <app></app>
 </div>
 
+
 <script>
+    function handleError(err) {
+        console.log(err);
+    }
 
-
-document.getElementById('player-tab-button').addEventListener("click", ui.showPlayer);
-document.getElementById('search-tab-button').addEventListener("click", ui.showSearch);
-document.getElementById('uri-tab-button').addEventListener("click", ui.showUriInput);
-
-// player tab actions
-ui.showPlayer();
-document.getElementById('play-button').addEventListener("click", player.play);
-document.getElementById('pause-button').addEventListener("click", player.pause);
-document.getElementById('next-button').addEventListener("click", player.next);
-document.getElementById('clear-button').addEventListener("click", player.clear);
-
-
-// search tab actions
-search = function() {
-    artist = ui.search.getSearchPhrase();
-    ui.search.clear();
-    spotify.album.search(artist)
-           .then(ui.search.displayResults);
-    return false;
-}
-
-// add uri tab actions
-document.getElementById('add-uri-button')
-        .addEventListener("click", function() {
-              uri = ui.uriSelection.getUri();
-              ui.uriSelection.clear();
-              player.add(uri);});
-
-function handleError(err) {
-    console.log(err);
-}
-
-
+    riot.mount('app', controller);
 </script>
 </body>
 </html>
+
