@@ -11,8 +11,8 @@
         <player-control controller={ opts }></player-control> <br/><br/>
         <queue controller={ opts }></queue>
     </div>
-    <search id="search" controller={ opts }></search>
-    <uri-input id="uri-input" controller={ opts }></uri-input>
+    <search id="search" controller={ opts } style="display:none"></search>
+    <uri-input id="uri-input" controller={ opts } style="display:none"></uri-input>
 
     <script>
         function showTab(tabId) {
