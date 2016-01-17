@@ -8,6 +8,7 @@
         controller.on("queued", updateQueue);
 
         function updateQueue(queue) {
+           console.log("queue was updated");
            queue = spotify.util.extractURIs(queue);
            spotify.track.resolveAll(queue)
                         .then(showQueue);

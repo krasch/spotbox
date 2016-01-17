@@ -15,7 +15,7 @@
     <script>
 
         var self = this;
-        var controller = opts;
+        var controller = opts.controller;
 
         search() {
             spotify.album.search(self.artist.value, handleError)

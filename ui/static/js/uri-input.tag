@@ -7,7 +7,7 @@
     <script>
 
         var self = this;
-        var controller = opts;
+        var controller = opts.controller;
 
         add(uri) {
             controller.add(self.spotify_uri.value);

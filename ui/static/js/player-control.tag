@@ -11,6 +11,4 @@
    <form onsubmit="{ opts.controller.clear }" style="display:inline">
      <input type="submit" value="clear">
    </form>
-
-
 </player-control>
