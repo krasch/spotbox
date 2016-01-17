@@ -7,10 +7,11 @@
      <script type="text/javascript" charset="utf-8" src="3rdparty/js/spotify-web-api.js"></script>
      <script src="https://cdn.rawgit.com/riot/riot/master/riot+compiler.min.js"></script>
 
-     <script type="text/javascript" charset="utf-8" src="js/player.js"></script>
+     <script type="text/javascript" charset="utf-8" src="js/controller.js"></script>
      <script type="text/javascript" charset="utf-8" src="js/spotify-api.js"></script>
 
-     <script type="riot/tag" src="js/control.tag"></script>
+     <script type="riot/tag" src="js/player.tag"></script>
+     <script type="riot/tag" src="js/player-control.tag"></script>
      <script type="riot/tag" src="js/current.tag"></script>
      <script type="riot/tag" src="js/queue.tag"></script>
      <script type="riot/tag" src="js/search.tag"></script>
@@ -23,62 +24,24 @@
 
 <div class="center">
     <div id="top-bar">
-       <input type="submit" value="Player" id="player-tab-button" style="display:inline">
-       <input type="submit" value="Search" id="search-tab-button" style="display:inline">
-       <input type="submit" value="Enter URI" id="uri-tab-button" style="display:inline">
+       <a href="#player"><button type="button">Player</button></a>
+       <a href="#search"><button type="button">Search</button></a>
+       <a href="#uri-input"><button type="button">Enter URI</button></a>
     </div>
 
-    <br/>
-
-    <div id="player-tab">
-     <div>
-       <img src="img/empty.png" height="200px" id="player-img">
-       <div id="player-artist"></div>
-       <div id="player-title"></div>
-       <div id="player-album"></div>
-       <input type="submit" value="play" id="play-button" style="display:inline">
-       <input type="submit" value="pause" id="pause-button" style="display:inline">
-       <input type="submit" value="next" id="next-button" style="display:inline">
-       <input type="submit" value="clear" id="clear-button" style="display:inline">
-     </div>
-
-      <br/>
-       <div id="queue"></div>
-    </div>
-
-    <control></control>
-    <current></current>
-    <queue></queue>
-    <search></search>
-    <uri-input></uri-input>
+    <div id="content"></div>
 </div>
 
 
 <script>
 
-riot.mount('control', player);
-riot.mount('current', player);
-riot.mount('queue', player);
-riot.mount('search', player);
-riot.mount('uri-input', player);
+// extremely simple router - take a path and mount a tag with the same name
+riot.route(function(path){riot.mount('div#content', path, controller);});
+riot.route.start(true)
 
-</script>
+// player is the first page user will see
+riot.route('player');
 
-<script>
-
-
-document.getElementById('player-tab-button').addEventListener("click", ui.showPlayer);
-document.getElementById('uri-tab-button').addEventListener("click", ui.showUriInput);
-
-// player tab actions
-ui.showPlayer();
-document.getElementById('play-button').addEventListener("click", player.play);
-document.getElementById('pause-button').addEventListener("click", player.pause);
-document.getElementById('next-button').addEventListener("click", player.next);
-document.getElementById('clear-button').addEventListener("click", player.clear);
-
-// Set up player events
-player.on("track", ui.player.update);
 
 function handleError(err) {
     console.log(err);

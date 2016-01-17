@@ -7,10 +7,10 @@
     <script>
 
         var self = this;
-        var player = opts;
+        var controller = opts;
 
         add(uri) {
-            player.add(self.spotify_uri.value);
+            controller.add(self.spotify_uri.value);
             self.spotify_uri.value = "";
             self.update();
         }

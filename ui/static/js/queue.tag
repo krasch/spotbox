@@ -4,7 +4,8 @@
     <script>
         var self = this;
 
-        opts.on("queued", updateQueue);
+        var controller = opts.controller;
+        controller.on("queued", updateQueue);
 
         function updateQueue(queue) {
            queue = spotify.util.extractURIs(queue);

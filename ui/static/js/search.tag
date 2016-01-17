@@ -15,7 +15,7 @@
     <script>
 
         var self = this;
-        var player = opts;
+        var controller = opts;
 
         search() {
             spotify.album.search(self.artist.value, handleError)
@@ -30,7 +30,7 @@
         }
 
         addToQueue(album) {
-            player.add(album.item.uri);
+            controller.add(album.item.uri);
         }
 </script>
 

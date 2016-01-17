@@ -7,13 +7,16 @@
     </div>
 
     <script>
+
         var self = this;
         self.track = {}
         self.track.cover = "img/empty.png"
 
-        opts.on("track", updateCurrentlyPlaying);
+        var controller = opts.controller;
+        controller.on("track", updateCurrentlyPlaying);
 
         function updateCurrentlyPlaying(trackURI) {
+            console.log(trackURI);
             spotify.track.resolve(trackURI)
                          .then(function(track) {self.track = track;
                                                 self.update();});
