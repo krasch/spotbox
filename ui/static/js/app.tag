@@ -16,23 +16,22 @@
 
     <script>
         function showTab(tabId) {
+            // extremely simple router - take a path and make tab with that id visible, make all other tabs invisible
             document.getElementById("player").style.display = "none";
             document.getElementById("search").style.display = "none";
             document.getElementById("uri-input").style.display = "none";
             document.getElementById(tabId).style.display = "block";
         }
+	this.on("mount", function() {
+            riot.route(showTab);
+            riot.route.start(true)
 
-        // extremely simple router - take a path and make tab with that id visible, make all other tabs invisible
-        // do not want to riot mount/unmount here because tags would loose their current state
-        riot.route(showTab);
-        riot.route.start(true)
+            // player is the first page user will see
+            riot.route('player');
 
-        // player is the first page user will see
-        riot.route('player');
-
-        // only now create the socket connection. this makes sure that no messages are lost while tags are mounting
-        createSocket();
-
+            // only now create the socket connection. this makes sure that no messages are lost while tags are mounting
+            createSocket();
+        });
     </script>
 
 </app>
